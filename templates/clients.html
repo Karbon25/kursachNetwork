@@ -1,0 +1,283 @@
+<div class="d-grid gap-2">
+    <button type="button" class="btn btn-success" onclick="addClient()">Додати нового клієнта</button>
+</div>
+<br>
+<br>
+<table id="clients" class="table">
+    <thead>
+         <tr>
+            <th>#</th>
+            <th>ПІБ</th>
+            <th>Номер договору</th>
+            <th>Тариф</th>
+            <th>Підключено до</th>
+            <th>Статус</th>
+            <th>Підключення</th>
+            <th>Редагувати</th>
+            <th>Видалити</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+
+    </tbody>
+
+
+</table>
+
+<!-- modal add Client -->
+
+
+
+<!-- modal edit Client -->
+
+<div class="modal fade" id="editClient" tabindex="-1" aria-labelledby="Редагувати дані клієнта" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editClientLabel">Редагувати дані клієнта</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="editIdClient" class="form-label">Обліковий номер</label>
+            <input type="text" class="form-control" name="idClient" required id="editIdClient" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="editNumberContractClient" class="form-label">Номер довоговору</label>
+            <input type="text" class="form-control" required id="editNumberContractClient" readonly name="numberContract">
+          </div>
+          <div class="mb-3">
+            <label for="editFullNameClient" class="form-label">ПІБ</label>
+            <input type="text" class="form-control" name="fullName" required id="editFullNameClient">
+          </div>
+          <div class="mb-3">
+            <label for="editTel" class="form-label">Номер телефону</label>
+            <input type="text" class="form-control" name="tel" required id="editTel">
+          </div>
+          <div class="mb-3">
+            <label for="editAddressClient" class="form-label">Адреса</label>
+            <input type="text" class="form-control" name="address" required id="editAddressClient">
+          </div>
+          <div class="mb-3">
+            <label for="editConnectionDateClient" class="form-label">Дата під'єднання</label>
+            <input type="date" class="form-control" required readonly id="editConnectionDateClient">
+          </div>
+          <div class="mb-3">
+            <label for="editTariffClient" class="form-label">Тариф</label>
+            <select class="form-control" name="idTariff" id="editTariffClient" required></select>
+          </div>
+          <div class="mb-3">
+            <label for="editRouterClient" class="form-label">Під'єднано до</label>
+            <select class="form-control" name="idRouter" id="editRouterClient" required></select>
+          </div>
+          <div class="mb-3">
+            <label for="editPasswordAccessClient" class="form-label">Пароль ppoe</label>
+            <input type="text" class="form-control" name="ppoePassword" required id="editPasswordAccessClient">
+          </div>
+          <input type="submit" style="display:none" id="submit">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+        <button type="button" class="btn btn-primary" onclick="$('#editClient form #submit').click();">Редагувати</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addClient" tabindex="-1" aria-labelledby="Додати клієнта" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addClientLabel">Додати клієнта</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="addNumberContractClient" class="form-label">Номер довоговору</label>
+            <input type="text" class="form-control" required id="addNumberContractClient" name="numberContract">
+          </div>
+          <div class="mb-3">
+            <label for="addFullNameClient" class="form-label">ПІБ</label>
+            <input type="text" class="form-control" name="fullName" required id="addFullNameClient">
+          </div>
+          <div class="mb-3">
+            <label for="addTel" class="form-label">Номер телефону</label>
+            <input type="text" class="form-control" name="tel" required id="addTel">
+          </div>
+          <div class="mb-3">
+            <label for="addAddressClient" class="form-label">Адреса</label>
+            <input type="text" class="form-control" name="address" required id="addAddressClient">
+          </div>
+          <div class="mb-3">
+            <label for="addConnectionDateClient" class="form-label">Дата під'єднання</label>
+            <input type="date" class="form-control" required name="ConnectionDate" id="addConnectionDateClient">
+          </div>
+          <div class="mb-3">
+            <label for="addTariffClient" class="form-label">Тариф</label>
+            <select class="form-control" name="idTariff" id="addTariffClient" required></select>
+          </div>
+          <div class="mb-3">
+            <label for="addRouterClient" class="form-label">Під'єднано до</label>
+            <select class="form-control" name="idRouter" id="addRouterClient" required></select>
+          </div>
+          <div class="mb-3">
+            <label for="addPasswordAccessClient" class="form-label">Пароль ppoe</label>
+            <input type="text" class="form-control" name="ppoePassword" required id="addPasswordAccessClient">
+          </div>
+          <input type="submit" style="display:none" id="submit">
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+        <button type="button" class="btn btn-primary" onclick="$('#addClient form #submit').click();">Додати</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    var table = $('#clients').DataTable({
+    ajax: {
+            url: '/ajax/clientsListUpdate',
+            type: 'POST',
+        },
+});
+
+
+setInterval( function () {
+    table.ajax.reload( null, false ); // user paging is not reset on reload
+}, 5000 );
+function setDataSelect(objForm, all){
+    $.ajax({
+        type: 'POST',
+        url: '/ajax/clientsGetTariffs',
+        data:{"all":all},
+        success: function(result){
+            if (result != "False"){  
+                objForm.find('[name="idTariff"]').html(result)
+            }
+        },
+        error: function(error){
+            alert(error);
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: '/ajax/clientsGetRouters',
+        success: function(result){
+            if (result != "False"){  
+                objForm.find('[name="idRouter"]').html(result)
+            }
+        },
+        error: function(error){
+            alert(error);
+        }
+    });
+
+}
+
+function showEdit(idClient){
+     setDataSelect($("#editClient"), "True");
+     $.ajax({
+        type: 'POST',
+        url: '/ajax/getClientData',
+        data: {"idClient":idClient},
+        success: function(result){
+            if (result != "False"){
+                result = JSON.parse(result)["data"][0];
+                $("#editClient #editIdClient").val(result[0]);
+                $("#editClient #editNumberContractClient").val(result[5]);
+                $("#editClient #editFullNameClient").val(result[1]);
+                $("#editClient #editTel").val(result[4]);
+                $("#editClient #editAddressClient").val(result[2]);
+                $("#editClient #editConnectionDateClient").val(result[8]);
+                $("#editClient #editTariffClient").val(result[3]);
+                $("#editClient #editRouterClient").val(result[6]);
+                $("#editClient #editPasswordAccessClient").val(result[7]);
+                modalEdit = new bootstrap.Modal('#editClient');
+                modalEdit.show();
+            }else{
+                alert("Виникла помилка, дані не знайдено");
+            }
+        },
+        error: function(error){
+            alert(error);
+        }
+    });
+}
+function showRemove(idClient){
+    if(confirm("Ви впевнені, що хочете видалити клієнта?")){
+         $.ajax({
+            type: 'POST',
+            url: '/ajax/removeClientData',
+            data: {"idClient":idClient},
+            success: function(result){
+                if(result == "True"){
+                    alert("Клієнт видалений");
+                }else{
+                    alert("Виникла помилка, клієнт не видалений");
+                }
+                
+            },
+            error: function(error){
+                alert(error);
+            }
+        });
+
+    }
+}
+$("#editClient form").on("submit", function() {
+    $.ajax({
+        type: 'POST',
+        url: '/ajax/editClientData',
+        data: $("#editClient form").serialize(),
+        success: function(result){
+            if (result == "True"){
+                modalEdit.hide();
+            }else{
+                alert("Виникла помилка, дані не оновлено");
+                modalEdit.hide();
+            }
+        },
+        error: function(error){
+            alert(error);
+        }
+    });
+    return(false);
+});
+
+
+function addClient(){
+    $('#addClient form')[0].reset();
+    setDataSelect($('#addClient form'), "False");
+    modalAdd = new bootstrap.Modal('#addClient');
+    modalAdd.show();
+}
+
+$("#addClient form").on("submit", function() {
+    $.ajax({
+        type: 'POST',
+        url: '/ajax/addClientData',
+        data: $("#addClient form").serialize(),
+        success: function(result){
+            if (result == "True"){
+                modalAdd.hide();
+            }else{
+                alert("При доданні виникла помилка. Перевірте номер договору");
+            }
+        },
+        error: function(error){
+            alert(error);
+        }
+    });
+    return(false);
+});
+</script>

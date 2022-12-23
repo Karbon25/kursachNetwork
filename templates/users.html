@@ -1,0 +1,250 @@
+<div class="d-grid gap-2">
+    <button type="button" class="btn btn-success" onclick="addUser()">Додати користувача</button>
+</div>
+<br>
+<br>
+<table id="colores" class="table">
+    <thead>
+         <tr>
+            <th>#</th>
+            <th>Ім'я</th>
+            <th>Логин</th>
+            <th>Редагувати</th>
+            <th>Видалити</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+
+    </tbody>
+
+
+</table>
+
+<!-- modal add router -->
+
+
+
+<!-- modal edit router -->
+
+<div class="modal fade" id="editUser" tabindex="-1" aria-labelledby="Редагувати дані користувач" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editUserLabel">Редагувати дані користувача</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="return(false);">
+          <div class="mb-3">
+            <label for="editIdUser" class="form-label">Номер облікового запису</label>
+            <input type="text" class="form-control" name="idUser" required id="editIdUser" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="editNameUser" class="form-label">Ім'я</label>
+            <input type="text" class="form-control" name="name" required id="editNameUser" autocomplete="off">
+          </div>
+          <div class="mb-3">
+            <label for="editLogin" class="form-label">Логін</label>
+            <input type="text" class="form-control" name="login" required id="editLogin" autocomplete="off">
+          </div>
+          <div class="mb-3">
+            <label for="editPassword" class="form-label">Змінити пароль</label>
+            <input type="password" class="form-control" name="password" id="editPassword" autocomplete="off">
+          </div>
+          {%for step in listNav%}
+          <div class="form-check">
+              <input class="form-check-input editIsPermission" name="{{step[0]}}" type="checkbox" id="editPermission{{step[0]}}">
+              <label class="form-check-label" for="editPermission{{step[0]}}">
+                {{step[1][0]}}
+              </label>
+            </div>
+          {%endfor%}
+       
+          <input type="submit" style="display:none" id="submit">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+        <button type="button" class="btn btn-primary" onclick="$('#editUser form #submit').click();">Редагувати</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addUser" tabindex="-1" aria-labelledby="Додати користувача" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addUserLabel">Додати користувача</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="addNameUser" class="form-label">Ім'я</label>
+            <input type="text" class="form-control" name="name" required id="addNameUser" autocomplete="off">
+          </div>
+          <div class="mb-3">
+            <label for="addLogin" class="form-label">Логін</label>
+            <input type="text" class="form-control" name="login" required id="addLogin" autocomplete="off">
+          </div>
+          <div class="mb-3">
+            <label for="addPassword" class="form-label">Пароль</label>
+            <input type="password" class="form-control" name="password" id="addPassword" required autocomplete="off">
+          </div>
+          {%for step in listNav%}
+          <div class="form-check">
+              <input class="form-check-input addIsPermission" name="{{step[0]}}" type="checkbox" id="addPermission{{step[0]}}">
+              <label class="form-check-label" for="addPermission{{step[0]}}">
+                {{step[1][0]}}
+              </label>
+            </div>
+          {%endfor%}
+          <input type="submit" style="display:none" id="submit">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+        <button type="button" class="btn btn-primary" onclick="$('#addUser form #submit').click();">Додати</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    var table = $('#colores').DataTable({
+    ajax: {
+            url: '/ajax/usersListUpdate',
+            type: 'POST',
+        },
+});
+
+
+setInterval( function () {
+    table.ajax.reload( null, false ); // user paging is not reset on reload
+}, 5000 );
+
+function showEdit(idUser){
+     $.ajax({
+        type: 'POST',
+        url: '/ajax/getUserData',
+        data: {"idUser":idUser},
+        success: function(result){
+            if (result){
+                result = JSON.parse(result)["data"][0];
+                $("#editUser #editIdUser").val(result[0]);
+                $("#editUser #editNameUser").val(result[1]);
+                $("#editUser #editLogin").val(result[2]);
+                let permission = result[3].split(" ");
+                for (var i = 0; i < permission.length; i++) {
+                    
+                    $("#editUser [name='"+permission[i]+"']").attr("checked",true);
+                }
+                modalEdit = new bootstrap.Modal('#editUser');
+                modalEdit.show();
+            }else{
+                alert("Виникла помилка, дані не знайдено");
+            }
+        },
+        error: function(error){
+            alert(error);
+        }
+    });
+}
+function showRemove(idUser){
+    if(confirm("Ви впевнені, що хочете видалити користувача? Якщо користувач активний, сеанс буде негайно завершений")){
+         $.ajax({
+            type: 'POST',
+            url: '/ajax/removeUserData',
+            data: {"idUser":idUser},
+            success: function(result){
+                if(result == "True"){
+                    alert("Користувача видалено");
+                }else{
+                    alert("Виникла помилка, користувач не видалений");
+                }
+                
+            },
+            error: function(error){
+                alert(error);
+            }
+        });
+
+    }
+}
+$("#editUser form").on("submit", function() {
+    let resultPermission = "";
+    $('#editUser form .editIsPermission').each(function() {
+      if($(this).is(':checked') == true){
+        resultPermission += this.name + ' ';
+      }
+    });
+    if(resultPermission != ""){
+        let formArray = $("#editUser form").serializeArray();
+        formArray.push({name:'permission', value: resultPermission.slice(0, -1)});
+         $.ajax({
+            type: 'POST',
+            url: '/ajax/editUserData',
+            data: formArray,
+            success: function(result){
+                if (result == "True"){
+                    modalEdit.hide();
+                }else{
+                    alert("Виникла помилка, дані не оновлено");
+                    modalEdit.hide();
+                }
+            },
+            error: function(error){
+                alert(error);
+            }
+        });
+    }else{
+        alert("Встановіть користувача права доступу");
+    }
+   
+    return(false);
+});
+
+
+function addUser(){
+    $('#addUser form')[0].reset();
+    modalAdd = new bootstrap.Modal('#addUser');
+    modalAdd.show();
+}
+
+$("#addUser form").on("submit", function() {
+    let resultPermission = "";
+    $('#addUser form .addIsPermission').each(function() {
+      if($(this).is(':checked') == true){
+        resultPermission += this.name + ' ';
+      }
+    });
+    if(resultPermission != ""){
+        let formArray = $("#addUser form").serializeArray();
+        formArray.push({name:'permission', value: resultPermission.slice(0, -1)});
+         $.ajax({
+            type: 'POST',
+            url: '/ajax/addUserData',
+            data: formArray,
+            success: function(result){
+                if (result == "True"){
+                    modalAdd.hide();
+                }else{
+                    alert("Виникла помилка, дані не додані. Перевірте відсутність введеного логіна в іншиш користувачів.");
+                }
+            },
+            error: function(error){
+                alert(error);
+            }
+        });
+    }else{
+        alert("Встановіть користувача права доступу");
+    }
+   
+    return(false);
+});
+</script>

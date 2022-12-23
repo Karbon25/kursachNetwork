@@ -1,0 +1,154 @@
+
+<br>
+<br>
+<div class="table-responsive">
+    <table id="pays" class="table">
+        <thead>
+             <tr>
+                <th>#</th>
+                <th>ПІБ</th>
+                <th>Баланс</th>
+                <th>Перегляд оплат</th>
+                <th>Внести оплату</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+
+        </tbody>
+
+
+    </table>
+</div>
+<!-- modal add Pays -->
+<div class="modal fade" id="showPays" tabindex="-1" aria-labelledby="showPays" aria-hidden="true">
+  <div class="modal-fullscreen modal-dialog" style="max-width:80vw !important; margin:auto !important">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="showPaysLabel">Перегляд транзакцій</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table" id="tableShowPays">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Дата</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- modal add Pays -->
+
+
+<div class="modal fade" id="addPays" tabindex="-1" aria-labelledby="Внести оплату" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addPaysLabel">Внести оплату</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="addClientNumber" class="form-label">Id клієнта</label>
+            <input type="text" class="form-control" required readonly id="addClientNumber" name="idClient">
+          </div>
+          <div class="mb-3">
+            <label for="addPrice" class="form-label">Сумма</label>
+            <input type="text" class="form-control" name="price" required id="addPrice">
+          </div>
+          <div class="mb-3">
+            <label for="addDate" class="form-label">Дата</label>
+            <input type="date" class="form-control" name="date" required id="addDate">
+          </div>
+          
+          <input type="submit" style="display:none" id="submit">
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+        <button type="button" class="btn btn-primary" onclick="$('#addPays form #submit').click();">Додати</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+$(window).on('load', function(){
+  $('#showPays').appendTo('body');
+});
+var table = $('#pays').DataTable({
+    ajax: {
+            url: '/ajax/paysListUpdate',
+            type: 'POST',
+        },
+});
+setInterval( function () {
+    table.ajax.reload( null, false ); // user paging is not reset on reload
+}, 5000 );
+var tableShowPay = $('#tableShowPays').DataTable();
+function showPays(idClient){
+     $.ajax({
+        type: 'POST',
+        url: '/ajax/getPays',
+        data: {"idClient":idClient},
+        success: function(result){
+            if (result != "False"){
+                tableShowPay.clear();
+                tableShowPay.rows.add(JSON.parse(result)["data"]);
+                tableShowPay.draw();
+                modalShow = new bootstrap.Modal('#showPays');
+                modalShow.show();
+            }else{
+                alert("Виникла помилка, дані не знайдено");
+            }
+        },
+        error: function(error){
+            alert(error);
+        }
+    });
+}
+
+function addPays(idClient){
+    $('#addPays form')[0].reset();
+    $('#addPays #addClientNumber').val(idClient);
+    modalAdd = new bootstrap.Modal('#addPays');
+    modalAdd.show();
+}
+
+$("#addPays form").on("submit", function() {
+    $.ajax({
+        type: 'POST',
+        url: '/ajax/addPays',
+        data: $("#addPays form").serialize(),
+        success: function(result){
+            if (result == "True"){
+                modalAdd.hide();
+            }else{
+                alert("При доданні виникла помилка. Перевірте номер договору");
+            }
+        },
+        error: function(error){
+            alert(error);
+        }
+    });
+    return(false);
+});
+</script>

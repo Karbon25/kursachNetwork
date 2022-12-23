@@ -1,0 +1,48 @@
+<div class="d-grid gap-2">
+    <button type="button" class="btn btn-success" onclick="loadAllData()">Відобразити всі елементи</button>
+</div>
+<br>
+<br>
+<table id="colores" class="table">
+    <thead>
+         <tr>
+            <th>#</th>
+            <th>Користувач</th>
+            <th>Дата</th>
+            <th>Повідомлення</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+
+    </tbody>
+
+
+</table>
+
+<script type="text/javascript">
+dataParam = 0;    
+var table = $('#colores').DataTable({
+    ajax: {
+            url: '/ajax/logUsersListUpdate',
+            type: 'POST',
+            data: function(d) { 
+              d.loadAllData = dataParam; 
+            },
+    },
+});
+
+
+intervalControl = setInterval( function () {
+    table.ajax.reload( null, false ); // user paging is not reset on reload
+}, 5000 );
+
+function loadAllData(){
+    if(confirm("Автоперезавантаження таблиці буде вимкнено. Відобразити всі елементи?")){
+        clearInterval(intervalControl);
+        dataParam = 1;
+        table.ajax.reload( null, false ); 
+    } 
+}
+
+</script>
